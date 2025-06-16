@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Gejala {
+  id        String       @id
+  deskripsi String
+  ruleGejala RuleGejala[]
+}
+
+model Penyakit {
+  id        String    @id
+  nama      String
+  rules     Rule[]
+}
+
+model Rule {
+  id          String       @id
+  penyakitId  String
+  penyakit    Penyakit     @relation(fields: [penyakitId], references: [id])
+  ruleGejala  RuleGejala[]
+}
+
+model RuleGejala {
+  id        Int     @id @default(autoincrement())
+  ruleId    String
+  gejalaId  String
+
+  rule      Rule     @relation(fields: [ruleId], references: [id])
+  gejala    Gejala   @relation(fields: [gejalaId], references: [id])
+
+  @@unique([ruleId, gejalaId])
+}
