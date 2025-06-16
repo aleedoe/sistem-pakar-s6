@@ -37,3 +37,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 
 jurnal : (https://www.ejurnal.umri.ac.id/index.php/coscitech/article/view/7361/3144)
+
+ppt: https://www.canva.com/design/DAGqfsYDVzA/OJMHj8P0DWokm5cutu--oQ/edit?utm_content=DAGqfsYDVzA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
