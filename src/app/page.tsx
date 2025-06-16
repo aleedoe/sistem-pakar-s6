@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle, Leaf, Stethoscope, ArrowRight } from 'lucide-react';
+import { CheckCircle, Stethoscope, ArrowRight, Leaf } from 'lucide-react';
 
 interface Gejala {
   id: string;
@@ -48,9 +48,7 @@ export default function Home() {
 
   const handleGejalaChange = (gejalaId: string, checked: boolean) => {
     setSelectedGejala(prev =>
-      checked
-        ? [...prev, gejalaId]
-        : prev.filter(id => id !== gejalaId)
+      checked ? [...prev, gejalaId] : prev.filter(id => id !== gejalaId)
     );
   };
 
@@ -61,7 +59,6 @@ export default function Home() {
     }
 
     setIsLoading(true);
-
     try {
       const response = await fetch('/api/diagnosa', {
         method: 'POST',
@@ -72,7 +69,6 @@ export default function Home() {
       });
 
       const data = await response.json();
-
       if (data.success) {
         setDiagnosaResult(data.data);
         setShowResult(true);
