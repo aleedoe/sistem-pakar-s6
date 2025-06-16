@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Card, CardContent } from '@/components/ui/card';
+// import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle, Stethoscope, ArrowRight, Leaf } from 'lucide-react';
 
 interface Gejala {
@@ -15,11 +15,9 @@ interface Gejala {
 }
 
 interface Disease {
-  id: string;
-  nama: string;
-  deskripsi?: string;
-  solusi?: string;
-  tingkatKecocokan?: number;
+  ruleId: string;
+  penyakitId: string;
+  penyakit?: string;
 }
 
 export default function Home() {
@@ -157,56 +155,54 @@ export default function Home() {
                   </Button>
                 </DialogTrigger>
 
-                <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-green-800 mb-4">
+                    <DialogTitle className="text-2xl font-bold text-green-800 mb-2">
                       Pilih Gejala yang Anda Alami
                     </DialogTitle>
-                  </DialogHeader>
-
-                  <div className="space-y-4">
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-sm text-gray-500">
                       Centang semua gejala yang terlihat pada tanaman padi Anda untuk mendapatkan diagnosa yang akurat.
                     </p>
-                    <div className="grid gap-4">
-                      {gejalaList.map((gejala) => (
-                        <Card key={gejala.id} className="hover:shadow-md transition-shadow">
-                          <CardContent className="p-4">
-                            <div className="flex items-start space-x-3">
-                              <Checkbox
-                                id={gejala.id}
-                                checked={selectedGejala.includes(gejala.id)}
-                                onCheckedChange={(checked) => handleGejalaChange(gejala.id, checked as boolean)}
-                                className="mt-1"
-                              />
-                              <div className="flex-1">
-                                <label htmlFor={gejala.id} className="text-sm font-medium leading-none cursor-pointer">
-                                  {gejala.nama}
-                                </label>
-                                {gejala.deskripsi && (
-                                  <p className="text-xs text-gray-500 mt-1">{gejala.deskripsi}</p>
-                                )}
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
+                  </DialogHeader>
 
-                    <div className="flex justify-between items-center pt-6 border-t">
-                      <p className="text-sm text-gray-500">
-                        {selectedGejala.length} gejala dipilih
-                      </p>
-                      <Button
-                        onClick={handleDiagnosa}
-                        disabled={isLoading || selectedGejala.length === 0}
-                        className="bg-green-600 hover:bg-green-700"
+                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {gejalaList.map((gejala) => (
+                      <div
+                        key={gejala.id}
+                        className="flex items-start space-x-3 bg-gray-50 p-4 rounded-xl border hover:shadow-sm transition"
                       >
-                        {isLoading ? 'Mendiagnosa...' : 'Diagnosa'}
-                      </Button>
-                    </div>
+                        <Checkbox
+                          id={gejala.id}
+                          checked={selectedGejala.includes(gejala.id)}
+                          onCheckedChange={(checked) => handleGejalaChange(gejala.id, checked as boolean)}
+                          className="mt-1 h-4 w-4"
+                        />
+                        <div className="flex-1">
+                          <label htmlFor={gejala.id} className="text-sm font-medium leading-none cursor-pointer text-gray-800">
+                            {gejala.nama}
+                          </label>
+                          {gejala.deskripsi && (
+                            <p className="text-xs text-gray-500 mt-1">{gejala.deskripsi}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex justify-between items-center pt-6 border-t mt-6">
+                    <p className="text-sm text-gray-500">
+                      {selectedGejala.length} gejala dipilih
+                    </p>
+                    <Button
+                      onClick={handleDiagnosa}
+                      disabled={isLoading || selectedGejala.length === 0}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      {isLoading ? 'Mendiagnosa...' : 'Diagnosa'}
+                    </Button>
                   </div>
                 </DialogContent>
+
               </Dialog>
 
               <Button
@@ -232,29 +228,24 @@ export default function Home() {
 
             <div className="space-y-4">
               {diagnosaResult.map((disease) => (
-                <Alert key={disease.id} className="border-green-200 bg-green-50">
+                <Alert key={disease.ruleId} className="border-green-200 bg-green-50">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <AlertDescription className="ml-2">
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold text-green-800">{disease.nama}</h3>
-                        {disease.tingkatKecocokan && (
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                            {Math.round(disease.tingkatKecocokan)}% cocok
-                          </span>
-                        )}
+                        <h3 className="font-semibold text-green-800">{disease.penyakit}</h3>
+                        {/* Tingkat kecocokan bisa dihitung manual jika dibutuhkan */}
                       </div>
-                      {disease.deskripsi && (
-                        <p className="text-green-700 mb-3">{disease.deskripsi}</p>
-                      )}
-                      {disease.solusi && (
-                        <div className="bg-white p-3 rounded-md border border-green-200">
-                          <p className="text-sm font-medium text-green-800 mb-1">
-                            Solusi Penanganan:
-                          </p>
-                          <p className="text-sm text-green-700">{disease.solusi}</p>
-                        </div>
-                      )}
+
+                      {/* Jika belum ada deskripsi/solusi, tampilkan placeholder atau abaikan */}
+                      <p className="text-green-700 mb-3 italic">Deskripsi belum tersedia</p>
+
+                      <div className="bg-white p-3 rounded-md border border-green-200">
+                        <p className="text-sm font-medium text-green-800 mb-1">
+                          Solusi Penanganan:
+                        </p>
+                        <p className="text-sm text-green-700 italic">Solusi belum tersedia</p>
+                      </div>
                     </div>
                   </AlertDescription>
                 </Alert>

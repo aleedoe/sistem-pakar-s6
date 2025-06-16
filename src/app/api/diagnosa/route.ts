@@ -1,20 +1,19 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { diagnosePenyakit } from '@/utils/forwardChaining';
+import { NextResponse } from 'next/server';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'POST') return res.status(405).end();
-
-    const { gejala } = req.body;
-
-    if (!Array.isArray(gejala) || gejala.length === 0) {
-        return res.status(400).json({ error: 'Gejala tidak boleh kosong' });
-    }
-
+export async function POST(req: Request) {
     try {
+        const body = await req.json();
+        const { gejala } = body;
+
+        if (!Array.isArray(gejala) || gejala.length === 0) {
+            return NextResponse.json({ success: false, message: 'Gejala tidak boleh kosong' }, { status: 400 });
+        }
+
         const hasil = await diagnosePenyakit(gejala);
-        return res.status(200).json({ hasil });
+        return NextResponse.json({ success: true, data: hasil });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Terjadi kesalahan server' });
+        console.error('Diagnosa error:', error);
+        return NextResponse.json({ success: false, message: 'Terjadi kesalahan server' }, { status: 500 });
     }
 }
